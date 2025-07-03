@@ -72,7 +72,7 @@ hello-app
 ### 1. Clone the repository
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/clarisa1997/hello-app-Polidori.git
 cd hello-app
 ```
 
@@ -218,4 +218,4 @@ make logs
 
 ## Author
 
-Clarissa Polidori — DevOps practice project.
+Clarissa Polidori.
