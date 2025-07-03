@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  database:
+    build: ./database
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_HOST: ${DB_HOST}
+      DB_PASSWORD_FILE: ${DB_PASSWORD_FILE}
+    secrets:
+      - db_password
+    depends_on:
+      - database
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+
+  frontend:
+    build: ./frontend
+    env_file: .env
+    environment:
+      BACKEND_ALIAS: ${BACKEND_ALIAS}
+      BACKEND_PORT: ${BACKEND_PORT}
+      WEB_PORT: ${WEB_PORT}
+    depends_on:
+      - backend
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
