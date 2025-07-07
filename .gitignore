@@ -1,5 +1,8 @@
+# ignore all files in secrets/
+secrets/*
+# but do NOT ignore .gitkeep
+!secrets/.gitkeep
 .env
-secrets/db_password.txt
 __pycache__/
 *.pyc
 .vscode/
