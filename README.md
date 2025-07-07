@@ -2,19 +2,35 @@
 
 A Docker-based demo project that shows a web page with a personalized message:
 
-> **Hello world, Clarissa!**
+> **Hello world, Clarissa Polidori!**
 
 The name is retrieved from a PostgreSQL database via a Flask backend, and displayed using a Flask frontend.
 
 ---
 
-## Application Features
+## Architecture
 
-The frontend is a Flask application that shows a greeting message on the main page (`/`). It queries the backend service to get the name, which is fetched from the PostgreSQL database. If the backend is unreachable or returns an error, the frontend shows an error message.
+```
+[ frontend (Flask) ]  --->  [ backend (Flask API) ]  --->  [ database (PostgreSQL) ]
+```
+
+- **Frontend**: displays the web page and queries the backend via HTTP  
+- **Backend**: a Flask API that retrieves the name from the database  
+- **Database**: PostgreSQL container with initial data (name)  
 
 ---
 
-## Project Structure
+## Requirements
+
+- Docker  
+- Docker Compose (v2)  
+- Make (optional but recommended)  
+- Bash (Linux/macOS or WSL on Windows)  
+
+---
+
+## Project structure
+
 
 ```bash
 hello-app
@@ -34,59 +50,45 @@ hello-app
 ├── tests
 │   ├── test_backend.py
 │   ├── test_frontend.py
-│   └── test_frontend_mock.py
+│   ├── test_e2e.py
+│   └── requirements_test.txt
 ├── .env
 ├── docker-compose.yml
 ├── Makefile
-├── requirements-dev.txt
 ├── start.sh
 ├── stop.sh
 └── README.md
-```
 
 - `frontend`: contains the source code of the frontend application.  
 - `backend`: contains the source code of the backend application.  
 - `database`: contains the PostgreSQL initialization script and Dockerfile.  
 - `secrets`: stores sensitive information such as the database password.  
-- `tests`: contains tests for frontend and backend.  
+- `tests`: contains unit and end-to-end tests for frontend and backend.  
 - `docker-compose.yml`: defines the services and how they are connected.  
 - `.env`: environment variables configuration file.  
-- `Makefile`: shortcuts for building, running, stopping, testing, and linting.  
-- `requirements-dev.txt`: development dependencies (testing, linting).  
-- `start.sh` and `stop.sh`: scripts to start and stop the project containers.  
-- `README.md`: this file.
+- `Makefile`: shortcuts for building, running, stopping, linting, and testing.  
+- `start.sh` and `stop.sh`: scripts to start and stop the application containers.  
+- `README.md`: this file.  
 
 ---
 
-## Prerequisites
+## Quick start
 
-- Docker and Docker Compose (v2) installed.  
-- Git installed to clone the repository.  
-- Python 3.11+ (for running tests locally).  
-- pip package manager.
-
----
-
-## Getting Started
-
-### 1. Clone the repository
+### 1. Clone or extract the project
 
 ```bash
-git clone https://github.com/clarisa1997/hello-app-Polidori.git
-cd hello-app-Polidori
+git clone <YOUR_REPOSITORY_URL>
+cd hello-app
 ```
 
 ### 2. Create the `db_password.txt` file
 
-The `db_password.txt` file contains the PostgreSQL database password. For security reasons, it is **not included** in the repository and must be created manually in the `secrets/` directory:
-
 ```bash
+mkdir -p secrets
 echo "your_db_password" > secrets/db_password.txt
 ```
 
 ### 3. Create the `.env` file
-
-Create a `.env` file in the project root with the following environment variables:
 
 ```env
 WEB_PORT=8000
@@ -103,17 +105,13 @@ POSTGRES_USER=myuser
 POSTGRES_PASSWORD=your_db_password
 ```
 
-Adjust values as needed.
-
 ### 4. Build and start the application
-
-Start all services with:
 
 ```bash
 ./start.sh
 ```
 
-Alternatively, you can run:
+Alternatively:
 
 ```bash
 make build
@@ -131,91 +129,79 @@ http://localhost:8000
 You should see:
 
 ```
-Hello world, Clarissa Polidori!
+Hello world, Clarissa!
 ```
 
 ---
 
-## Stopping the services
+## Testing & Linting
 
-To stop and remove containers and networks, run:
+We maintain three core test suites—each running in disposable Python containers so you never need to install anything on your host:
 
-```bash
-./stop.sh
-```
+### 1. Backend Unit Tests (`tests/unit_test_backend.py`)
+- **What it covers**  
+  - `create_conn()` under both successful and `OperationalError` conditions (mocks `psycopg2.connect`).  
+  - `get_name()` when a valid connection returns a name, and when the connection is `None`.  
+- **Why it matters**  
+  Validates your database-access logic in isolation, ensuring connection setup and query handling are rock-solid before hitting a real DB.
 
-Or:
+### 2. Frontend Unit Tests (`tests/unit_test_frontend.py`)
+- **What it covers**  
+  - The Flask `/` route returns **“Hello world, {name}!”** when `get_name()` succeeds (mocked to return a sample name).  
+  - It shows **“There was an error getting the name”** when `get_name()` returns `-1`.  
+- **Why it matters**  
+  Checks your UI behavior without launching any HTTP servers—your rendering logic and error handling get thoroughly verified.
 
-```bash
-make down
-```
+### 3. End-to-End Smoke Tests (`tests/test_e2e.py`)
+- **What it covers**  
+  - Polls the live backend at `http://localhost:5000/name` until it responds, then asserts a non-empty name.  
+  - Polls the live frontend at `http://localhost:8000/` until it serves a page containing **“Hello world”**.  
+- **Why it matters**  
+  Exercises the full stack (DB → backend → frontend) over real HTTP, ensuring your Compose setup and port mappings work as expected.
 
----
+#### How to run the tests
 
-## Running Tests
+1. **Start your application stack**  
+   ```bash
+   make build && make up
+   ```
 
-Tests are implemented using `pytest`. You can run all tests by executing:
+2. **Lint your code**  
+   ```bash
+   make lint
+   ```  
+   - Runs `flake8` inside a temporary `python:3.11-slim` container with dev deps.
 
-```bash
-make test
-```
+3. **Run all tests**  
+   ```bash
+   make test
+   ```  
+   - Runs `pytest` inside a temporary `python:3.11-slim` container (with `--network host`), installing runtime & dev deps.
 
-Or manually:
-
-```bash
-pytest tests/
-```
-
-### Test files overview
-
-| File                    | Description                                                    |
-|-------------------------|----------------------------------------------------------------|
-| `test_backend.py`       | Tests backend API endpoint `/name`.                            |
-| `test_frontend.py`      | Tests frontend displays greeting correctly.                   |
-| `test_frontend_mock.py` | Tests frontend handling of backend failure scenarios.         |
-
----
-
-## Code Linting
-
-Ensure code style with:
-
-```bash
-make lint
-```
-
----
-
-## Debugging and Logs
-
-View logs from all running containers using:
-
-```bash
-make logs
-```
+4. **Tear down**  
+   ```bash
+   make down
+   ```
 
 ---
 
-## Security Considerations
+## Security
 
-- Database password is stored securely using Docker Secrets.  
-- `.env` and `secrets/` directories are excluded from version control via `.gitignore`.  
-- Environment variables are centralized and configurable in the `.env` file.
+- The database password is not written in the code but stored in `secrets/db_password.txt` and injected via Docker Secrets.  
+- `.env` and `secrets/` are excluded from Git via `.gitignore`.
 
 ---
 
 ## Technologies Used
 
 - Docker & Docker Compose (v2)  
-- Python 3.11+  
-- Flask for backend and frontend  
-- PostgreSQL database  
-- pytest for testing  
-- flake8 for linting  
-- Makefile and Bash scripts for automation
+- Python 3.11+, Flask  
+- PostgreSQL  
+- pytest, flake8, requests  
+- Makefile and Bash scripts  
 
 ---
 
 ## Author
 
-Clarissa Polidori.
+Clarissa Polidori — Cloud-engineer-graduate-ION-project.  
