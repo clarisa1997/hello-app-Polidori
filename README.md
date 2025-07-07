@@ -2,7 +2,7 @@
 
 A Docker-based demo project that shows a web page with a personalized message:
 
-> **Hello world, Clarissa Polidori!**
+> **Hello world, Clarissa!**
 
 The name is retrieved from a PostgreSQL database via a Flask backend, and displayed using a Flask frontend.
 

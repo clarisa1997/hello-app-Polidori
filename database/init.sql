@@ -1,2 +1,2 @@
-CREATE TABLE users (id SERIAL PRIMARY KEY, name TEXT);
-INSERT INTO users (name) VALUES ('Clarissa Polidori');
+CREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50));
+INSERT INTO users (name) VALUES ('Clarissa');
