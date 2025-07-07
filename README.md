@@ -48,7 +48,7 @@ hello-app
 - `backend`: contains the source code of the backend application.  
 - `database`: contains the PostgreSQL initialization script and Dockerfile.  
 - `secrets`: stores sensitive information such as the database password.  
-- `tests`: contains unit and integration tests for frontend and backend.  
+- `tests`: contains tests for frontend and backend.  
 - `docker-compose.yml`: defines the services and how they are connected.  
 - `.env`: environment variables configuration file.  
 - `Makefile`: shortcuts for building, running, stopping, testing, and linting.  
