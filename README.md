@@ -48,10 +48,10 @@ hello-app
 ├── secrets
 │   └── db_password.txt
 ├── tests
-│   ├── test_backend.py
-│   ├── test_frontend.py
-│   ├── test_e2e.py
-│   └── requirements_test.txt
+│   ├── unit_test_backend.py
+│   ├── unit_test_frontend.py
+│   ├── unit_test_e2e.py
+│   └── requirements.txt
 ├── .env
 ├── docker-compose.yml
 ├── Makefile
@@ -69,7 +69,7 @@ hello-app
 - `Makefile`: shortcuts for building, running, stopping, linting, and testing.  
 - `start.sh` and `stop.sh`: scripts to start and stop the application containers.  
 - `README.md`: this file.  
-
+```
 ---
 
 ## Quick start
