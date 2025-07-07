@@ -204,4 +204,4 @@ We maintain three core test suites—each running in disposable Python container
 
 ## Author
 
-Clarissa Polidori — Cloud-engineer-graduate-ION-project.  
+Clarissa Polidori.
