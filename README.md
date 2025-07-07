@@ -77,7 +77,7 @@ hello-app
 ### 1. Clone or extract the project
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/clarisa1997/hello-app-Polidori.git
 cd hello-app
 ```
 
