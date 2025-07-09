@@ -16,7 +16,7 @@ fi
 
 # Verifica Make
 if ! command -v make &> /dev/null; then
-    echo "⚠️ Make non è installato. Userò docker compose manualmente."
+    echo "Make non è installato. Userò docker compose manualmente."
     echo "Eseguo: docker compose up --build -d"
     docker compose up -d --build
 else

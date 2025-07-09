@@ -18,7 +18,9 @@ logs:
 ## Lint all Python code using flake8 inside Docker
 lint:
 	docker run --rm \
-	  -v "$(PWD)":/app -w /app python:3.11-slim \
+	  -v "$(PWD)":$(WORKDIR) \
+	  -w $(WORKDIR) \
+	  $(PY_IMAGE) \
 	  bash -c "\
 	    pip install --upgrade pip && \
 		pip install flake8 && \
@@ -31,6 +33,7 @@ test:
 	  --network host \
 	  -v "$(PWD)":$(WORKDIR) \
 	  -w $(WORKDIR) \
+	  -e PYTHONPATH=$(WORKDIR) \
 	  $(PY_IMAGE) \
 	  bash -c "\
 	    pip install --upgrade pip && \

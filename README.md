@@ -51,9 +51,9 @@ hello-app
 ├── secrets
 │   └── db_password.txt
 ├── tests
-│   ├── unit_test_backend.py
-│   ├── unit_test_frontend.py
-│   ├── test_e2e.py
+│   ├── unit_backend_test.py
+│   ├── unit_frontend_test.py
+│   ├── e2e_test.py
 │   └── requirements.txt
 ├── .env
 ├── docker-compose.yml
@@ -172,14 +172,14 @@ Hello world, Clarissa!
 
 We maintain three core test suites—each running in disposable Python containers so you never need to install anything on your host:
 
-### 1. Backend Unit Tests (`tests/unit_test_backend.py`)
+### 1. Backend Unit Tests (`tests/unit_backend_test.py`)
 - **What it covers**  
   - `create_conn()` under both successful and `OperationalError` conditions (mocks `psycopg2.connect`).  
   - `get_name()` when a valid connection returns a name, and when the connection is `None`.  
 - **Why it matters**  
   Validates your database-access logic in isolation, ensuring connection setup and query handling are rock-solid before hitting a real DB.
 
-### 2. Frontend Unit Tests (`tests/unit_test_frontend.py`)
+### 2. Frontend Unit Tests (`tests/unit_frontend_test.py`)
 - **What it covers**  
   - The Flask `/` route returns **“Hello world, {name}!”** when `get_name()` succeeds (mocked to return a sample name).  
   - It shows **“There was an error getting the name”** when `get_name()` returns `-1`.  
