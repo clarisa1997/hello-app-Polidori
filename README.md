@@ -87,11 +87,11 @@ cd hello-app
 ### 2. Create the `db_password.txt` file
 
 ```bash
-mkdir -p secrets
 echo "your_db_password" > secrets/db_password.txt
 ```
 
 ### 3. Create the `.env` file
+Before running the project, make sure to create the `.env` file at the **root of the project directory** with the following contents:
 
 ```env
 WEB_PORT=8000
