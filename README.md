@@ -81,7 +81,7 @@ hello-app
 
 ```bash
 git clone https://github.com/clarisa1997/hello-app-Polidori.git
-cd hello-app
+cd hello-app-Polidori
 ```
 
 ### 2. Create the `db_password.txt` file
