@@ -13,9 +13,9 @@ def client(monkeypatch):
 
 # Test that the frontend returns the expected message when backend works correctly
 def test_hello_success(client):
-    resp = client.get("/")  # Send a GET request to the root endpoint
-    assert resp.status_code == 200  # Check that the response status is OK
-    assert b"Hello world, Clarissa!" in resp.data  # Verify the correct greeting is in the response
+    resp = client.get("/")  
+    assert resp.status_code == 200  
+    assert b"Hello world, Clarissa!" in resp.data  
 
 # Test that the frontend handles a backend error properly
 def test_hello_backend_error(monkeypatch):
@@ -23,6 +23,6 @@ def test_hello_backend_error(monkeypatch):
     # Replace get_name with a lambda that returns -1 to simulate a backend failure
     monkeypatch.setattr("frontend.app.get_name", lambda: -1)
     with frontend_app.test_client() as client:
-        resp = client.get("/")  # Send a GET request to the root endpoint
-        assert resp.status_code == 200  # The response should still be successful
-        assert b"There was an error getting the name" in resp.data  # Check that the error message is displayed
+        resp = client.get("/")  
+        assert resp.status_code == 200  
+        assert b"There was an error getting the name" in resp.data  

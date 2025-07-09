@@ -1,8 +1,6 @@
 # hello-app
 
-> **Note:** This project is designed to run on **Unix-like systems** (Linux/macOS) or **Windows with WSL**.  
-> Native Windows environments without WSL are not supported due to dependencies on Bash, Make, and Unix-style path conventions.
-
+> **Note:** All commands in this README are written for Unix-based systems (Linux, macOS, or Windows using WSL).
 A Docker-based demo project that shows a web page with a personalized message:
 
 > **Hello world, Clarissa!**
@@ -50,7 +48,9 @@ hello-app
 │   └── requirements.txt
 ├── secrets
 │   └── db_password.txt
-├── tests
+├── testsThis project is designed to run on **Unix-like systems** (Linux/macOS) or **Windows with WSL**.  
+> Native Windows environments without WSL are not supported due to dependencies on Bash, Make, and Unix-style path conventions.
+
 │   ├── unit_backend_test.py
 │   ├── unit_frontend_test.py
 │   ├── e2e_test.py
@@ -76,6 +76,7 @@ hello-app
 ---
 
 ## Quick start
+
 
 ### 1. Clone or extract the project
 
