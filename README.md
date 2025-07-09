@@ -4,6 +4,9 @@ A Docker-based demo project that shows a web page with a personalized message:
 
 > **Hello world, Clarissa!**
 
+> **Note:** This project is designed to run on **Unix-like systems** (Linux/macOS) or **Windows with WSL**.  
+> Native Windows environments without WSL are not supported due to dependencies on Bash, Make, and Unix-style path conventions.
+
 The name is retrieved from a PostgreSQL database via a Flask backend, and displayed using a Flask frontend.
 
 ---
@@ -50,7 +53,7 @@ hello-app
 ├── tests
 │   ├── unit_test_backend.py
 │   ├── unit_test_frontend.py
-│   ├── unit_test_e2e.py
+│   ├── test_e2e.py
 │   └── requirements.txt
 ├── .env
 ├── docker-compose.yml
@@ -102,8 +105,39 @@ DB_PASSWORD_FILE=/run/secrets/db_password
 
 POSTGRES_DB=mydb
 POSTGRES_USER=myuser
-POSTGRES_PASSWORD=your_db_password
+POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+
 ```
+
+- **WEB_PORT**  
+  Port on the host machine to which the frontend container’s port is mapped.
+
+- **BACKEND_ALIAS**  
+  Docker Compose service name for the backend—used by the frontend to resolve its hostname.
+
+- **BACKEND_PORT**  
+  Port on which the backend container listens for HTTP requests.
+
+- **DB_NAME**  
+  Name of the PostgreSQL database that the Flask backend will connect to.
+
+- **DB_USER**  
+  Username used by the backend to authenticate with PostgreSQL.
+
+- **DB_HOST**  
+  Hostname or service name of the PostgreSQL container on the Docker network.
+
+- **DB_PASSWORD_FILE**  
+  File path inside the backend container where Docker mounts the database password secret.
+
+- **POSTGRES_DB**  
+  Instructs the PostgreSQL image to create a database with this name at startup.
+
+- **POSTGRES_USER**  
+  Superuser name for the PostgreSQL container.
+
+- **POSTGRES_PASSWORD_FILE**  
+  File path inside the database container where Docker mounts the database password secret.
 
 ### 4. Build and start the application
 

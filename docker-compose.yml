@@ -2,42 +2,44 @@ version: '3.8'
 
 services:
   database:
-    build: ./database
-    env_file: .env
+    build: ./database                      # Build the PostgreSQL image from ./database/Dockerfile
+    secrets:
+      - db_password                        # Mount the db_password secret into the container
+    env_file: .env                         # Load common env vars from the .env file
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}          # Name of the database to create on startup
+      POSTGRES_USER: ${POSTGRES_USER}      # Database superuser name
+      POSTGRES_PASSWORD_FILE: ${POSTGRES_PASSWORD_FILE}  # Path to the password secret inside the container
     ports:
-      - "5432:5432"
+      - "5432:5432"                        # Expose Postgres port for external access (host:container)
 
   backend:
-    build: ./backend
-    env_file: .env
+    build: ./backend                       # Build the Flask API image from ./backend/Dockerfile
+    env_file: .env                         # Load common env vars from the .env file
     environment:
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_HOST: ${DB_HOST}
-      DB_PASSWORD_FILE: ${DB_PASSWORD_FILE}
+      DB_NAME: ${DB_NAME}                  # Database name the backend should connect to
+      DB_USER: ${DB_USER}                  # Username the backend uses for authentication
+      DB_HOST: ${DB_HOST}                  # Hostname of the database service (Docker network alias)
+      DB_PASSWORD_FILE: ${DB_PASSWORD_FILE} # File path where the backend reads the DB password secret
     secrets:
-      - db_password
+      - db_password                        # Mount the same db_password secret for backend use
     depends_on:
-      - database
+      - database                           # Ensure the database service starts before the backend
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "${BACKEND_PORT}:${BACKEND_PORT}"  # Expose backend port (host:container)
 
   frontend:
-    build: ./frontend
-    env_file: .env
+    build: ./frontend                      # Build the Flask frontend image from ./frontend/Dockerfile
+    env_file: .env                         # Load common env vars from the .env file
     environment:
-      BACKEND_ALIAS: ${BACKEND_ALIAS}
-      BACKEND_PORT: ${BACKEND_PORT}
-      WEB_PORT: ${WEB_PORT}
+      BACKEND_ALIAS: ${BACKEND_ALIAS}      # Service hostname the frontend uses to call the backend
+      BACKEND_PORT: ${BACKEND_PORT}        # Port the frontend uses to call the backend
+      WEB_PORT: ${WEB_PORT}                # Port the frontend listens on
     depends_on:
-      - backend
+      - backend                            # Ensure the backend service starts before the frontend
     ports:
-      - "${WEB_PORT}:${WEB_PORT}"
+      - "${WEB_PORT}:${WEB_PORT}"          # Expose frontend port (host:container)
 
 secrets:
   db_password:
-    file: ./secrets/db_password.txt
+    file: ./secrets/db_password.txt        # Local file containing the DB password, injected as a Docker Secret
