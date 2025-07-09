@@ -1,11 +1,11 @@
 # hello-app
 
+> **Note:** This project is designed to run on **Unix-like systems** (Linux/macOS) or **Windows with WSL**.  
+> Native Windows environments without WSL are not supported due to dependencies on Bash, Make, and Unix-style path conventions.
+
 A Docker-based demo project that shows a web page with a personalized message:
 
 > **Hello world, Clarissa!**
-
-> **Note:** This project is designed to run on **Unix-like systems** (Linux/macOS) or **Windows with WSL**.  
-> Native Windows environments without WSL are not supported due to dependencies on Bash, Make, and Unix-style path conventions.
 
 The name is retrieved from a PostgreSQL database via a Flask backend, and displayed using a Flask frontend.
 
